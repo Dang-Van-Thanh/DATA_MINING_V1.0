@@ -1,0 +1,139 @@
+# ===============================
+# GLOBAL SETTINGS
+# ===============================
+seed: 42
+random_state: 42
+
+paths:
+  raw_data: data/raw/bank-full.csv
+  processed_data: data/processed/bank_processed.csv
+  outputs:
+    figures: outputs/figures
+    tables: outputs/tables
+    models: outputs/models
+
+# ===============================
+# DATA & PREPROCESSING
+# ===============================
+data:
+  target: y
+  drop_columns:
+    - duration   # leakage – chỉ dùng cho EDA, KHÔNG dùng cho model
+  categorical_cols:
+    - job
+    - marital
+    - education
+    - default
+    - housing
+    - loan
+    - contact
+    - month
+    - poutcome
+  numerical_cols:
+    - age
+    - balance
+    - day
+    - campaign
+    - pdays
+    - previous
+
+preprocessing:
+  missing_strategy:
+    numerical: median
+    categorical: most_frequent
+  scaling: standard   # standard | minmax | none
+  encoding: onehot    # onehot | ordinal
+  balance_log_transform: true
+  test_size: 0.2
+  stratify: true
+
+# ===============================
+# ASSOCIATION RULE MINING
+# ===============================
+association:
+  enabled: true
+  min_support: 0.05
+  min_confidence: 0.6
+  min_lift: 1.2
+  max_len: 4
+  include_target: true   # có đưa y vào luật hay không
+
+# ===============================
+# CLUSTERING
+# ===============================
+clustering:
+  enabled: true
+  method: kmeans        # kmeans | dbscan | hac
+  k_range: [3, 4, 5, 6]
+  selected_k: 4         # dùng khi không auto chọn
+  scale_before_cluster: true
+  evaluation_metric: silhouette
+
+# ===============================
+# SUPERVISED MODELING
+# ===============================
+modeling:
+  metrics:
+    - f1
+    - pr_auc
+  cross_validation:
+    enabled: false
+    n_folds: 5
+
+  models:
+    logistic_regression:
+      enabled: true
+      class_weight: balanced
+      max_iter: 1000
+
+    random_forest:
+      enabled: true
+      n_estimators: 300
+      max_depth: null
+      min_samples_split: 2
+      class_weight: balanced
+
+    xgboost:
+      enabled: true
+      n_estimators: 300
+      max_depth: 6
+      learning_rate: 0.05
+      subsample: 0.8
+      colsample_bytree: 0.8
+      scale_pos_weight: auto   # tự động theo imbalance
+
+# ===============================
+# IMBALANCE HANDLING
+# ===============================
+imbalance:
+  method: class_weight   # class_weight | smote | none
+  smote:
+    enabled: false
+    sampling_strategy: auto
+    k_neighbors: 5
+
+# ===============================
+# SEMI-SUPERVISED LEARNING
+# ===============================
+semi_supervised:
+  enabled: true
+  label_ratios: [0.1, 0.2, 0.3]   # % dữ liệu có nhãn
+  method: self_training          # self_training | label_spreading
+  base_model: logistic_regression
+  confidence_threshold: 0.9
+  max_iterations: 10
+
+# ===============================
+# EVALUATION & REPORTING
+# ===============================
+evaluation:
+  confusion_matrix: true
+  roc_curve: true
+  pr_curve: true
+  feature_importance: true
+  top_k_features: 15
+
+report:
+  save_tables: true
+  save_figures: true
+  format: png
