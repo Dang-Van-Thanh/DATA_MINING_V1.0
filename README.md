@@ -1,5 +1,6 @@
 # DATA_MINING_V1.0
 ```
+cd DATA_MINING_PROJECT
 python -m venv venv
 venv\Scripts\activate
 pip install -r requirements.txt
