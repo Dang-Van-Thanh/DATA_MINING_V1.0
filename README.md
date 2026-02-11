@@ -2,6 +2,7 @@
 ```
 cd DATA_MINING_PROJECT
 python -m venv venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass (Nếu activate venv lỗi)
 venv\Scripts\activate
 pip install -r requirements.txt
 python scripts/run_pipeline.py
